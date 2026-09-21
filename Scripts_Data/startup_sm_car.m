@@ -81,5 +81,9 @@ if(open_start_content)
 
     %% Open model
     sm_car
-    sm_car_config_maneuver('sm_car','CRG Hockenheim F')
+    sm_car_config_maneuver('sm_car','Skidpad')
 end
+
+
+matlab.engine.shareEngine
+shareMATLABSession()

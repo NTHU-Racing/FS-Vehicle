@@ -17,10 +17,13 @@ else
     set_param(fWindCar_h,'fWind','[0 0 0]','dWind','30000');
 end
 
-if(onTrailer)
-    set_param(fWindTrl_h,'fWind','[0 1000 0]','dWind','10');
-else
-    set_param(fWindTrl_h,'fWind','[0 0 0]','dWind','30000');
+% The trailer input only exists if the model still has a trailer wind block
+if(~isempty(fWindTrl_h))
+    if(onTrailer)
+        set_param(fWindTrl_h,'fWind','[0 1000 0]','dWind','10');
+    else
+        set_param(fWindTrl_h,'fWind','[0 0 0]','dWind','30000');
+    end
 end
 
 end

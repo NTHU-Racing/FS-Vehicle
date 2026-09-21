@@ -27,15 +27,6 @@ switch veh_body
         error(['Vehicle type ' veh_body ' not recognized.']);
 end
 
-% Get trailer type from model (Trailer.config, dropdown setting)
-% to set consistent initial values for wheel speeds
-trl_body = sm_car_vehcfg_getTrailerType(modelname);
-
-switch trl_body
-    case 'None',        trl_inst = 'None';      init_inst_trl = 'None';
-    otherwise
-        trl_inst = ['Trailer_' trl_body];       init_inst_trl = ['Trailer_' trl_body];
-end
 
 maneuver_str = lower(maneuver);
 %if(~strcmpi(maneuver,'default'))
@@ -60,7 +51,6 @@ sm_car_config_wind(modelname,0,0)
 set_param([modelname '/World'],'popup_gravity','Constant');
 
 % Assume no constraints on vehicle
-set_param([modelname '/Vehicle/Vehicle Constraint'],'LabelModeActiveChoice','NoConstraint');
 set_param([modelname '/Vehicle/Vehicle'],'popup_BodyToWorld','Free');
 set_param([modelname '/Vehicle/Vehicle'],'popup_wheel_spin','Free');
 

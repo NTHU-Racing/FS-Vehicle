@@ -37,7 +37,7 @@ logsout_py0 = logsout_yCar.Data(1);
 % Find wheels
 [tire_radius, tireFields] = sm_car_get_TireRadius(Vehicle);
 
-chassis_log_fieldnames = fieldnames(logsout_VehBus.Values.Chassis);
+chassis_log_fieldnames = fieldnames(logsout_VehBus.Values);
 whl_inds = find(startsWith(chassis_log_fieldnames,'Whl'));
 whlnames = sort(chassis_log_fieldnames(whl_inds));
 
@@ -46,7 +46,7 @@ plot(logsout_vxVeh.Time, logsout_sVeh*3.6, 'k--', 'LineWidth', 1,'DisplayName','
 hold on
 
 for whl_i = 1:length(whl_inds)
-    logsout_nWhl = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).n;
+    logsout_nWhl = logsout_VehBus.Values.(whlnames{whl_i}).n;
     radius_ind = str2num(whlnames{whl_i}(end));
     if(contains(whlnames{whl_i},'R'))
         lineStyle = '--';
@@ -73,8 +73,8 @@ if(length(temp_tire_h)==1)
 else
     temp_tire_sys = getfullname(temp_tire_h);
 end
-temp_tire_sys_vehi = find(contains(temp_tire_sys,'/Vehicle/Chassis/'));
-tire_variant_name = char(get_param(temp_tire_sys(temp_tire_sys_vehi),'ActiveVariant'));
+temp_tire_sys_vehi = find(contains(temp_tire_sys,'/Vehicle/Vehicle/'));
+tire_variant_name = char(get_param(strcat(temp_tire_sys(temp_tire_sys_vehi),'/Tire'),'ActiveVariant'));
 text(0.1,0.8,sprintf('Tire %s\nSteps: %d',tire_variant_name,length(logsout_vxVeh.Time)),'Units','Normalized','Color',[1 1 1]*0.5);
 text(0.1,0.65,sprintf('xFinal: %0.2f m\nyFinal: %0.2f m',...
     logsout_xCar.Data(end)-logsout_px0,logsout_yCar.Data(end)-logsout_py0),'Units','Normalized','Color',[1 1 1]*0.5);

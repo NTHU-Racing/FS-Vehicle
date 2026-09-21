@@ -69,7 +69,7 @@ if(~isempty(hasTrajectory) && isempty(hasAccel))
     logsout_xCar = logsout_VehBus.Values.World.x;
     logsout_yCar = logsout_VehBus.Values.World.y;
     
-    logsout_vx   = logsout_VehBus.Values.Chassis.Body.CG.vx;
+    logsout_vx   = logsout_VehBus.Values.Body.CG.vx;
     logsout_aYaw = logsout_VehBus.Values.World.aYaw;
     logsout_xBody = [0;cumsum(sqrt((diff(logsout_xCar.Data)).^2+diff(logsout_yCar.Data).^2))];
     
@@ -203,7 +203,7 @@ elseif(~isempty(hasDriveCycle))
     % Plot results for systems with a defined trajectory
     % Extract results
     logsout_VehBus = logsout_sm_car.get('VehBus');
-    logsout_vx   = logsout_VehBus.Values.Chassis.Body.CG.vx;
+    logsout_vx   = logsout_VehBus.Values.Body.CG.vx;
     
     logsout_DrvBus = logsout_sm_car.get('DrvBus');
     logsout_ref_vx   = logsout_DrvBus.Values.Reference.vTarget;
@@ -235,7 +235,7 @@ elseif(~isempty(hasTrajectory) && ~isempty(hasAccel))
     logsout_xCar = logsout_VehBus.Values.World.x;
     logsout_yCar = logsout_VehBus.Values.World.y;
     
-    logsout_vx   = logsout_VehBus.Values.Chassis.Body.CG.vx;
+    logsout_vx   = logsout_VehBus.Values.Body.CG.vx;
     
     logsout_DrvBus = logsout_sm_car.get('DrvBus');
     logsout_dist   = logsout_DrvBus.Values.Reference.dist;

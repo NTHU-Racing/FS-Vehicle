@@ -25,8 +25,8 @@ temp_colororder = get(gca,'defaultAxesColorOrder');
 % Get simulation results
 logsout_VehBus = logsout_sm_car.get('VehBus');
 
-logsout_xSteerA1 = logsout_VehBus.Values.Chassis.SuspA1.Steer.xRack;
-logsout_xSteerA2 = logsout_VehBus.Values.Chassis.SuspA2.Steer.xRack;
+logsout_xSteerA1 = logsout_VehBus.Values.Susp.SuspA1.Steer.xRack;
+logsout_xSteerA2 = logsout_VehBus.Values.Susp.SuspA2.Steer.xRack;
 logsout_vxVeh = logsout_VehBus.Values.World.vx;
 logsout_vyVeh = logsout_VehBus.Values.World.vy;
 logsout_vxyVeh = sqrt(logsout_vxVeh.Data.^2+logsout_vyVeh.Data.^2);
@@ -92,8 +92,8 @@ if(length(temp_tire_h)==1)
 else
     temp_tire_sys = getfullname(temp_tire_h);
 end
-temp_tire_sys_vehi = find(contains(temp_tire_sys,'/Vehicle/Chassis/'));
-temp_tirevar = char(get_param(temp_tire_sys(temp_tire_sys_vehi),'ActiveVariant'));
+temp_tire_sys_vehi = find(contains(temp_tire_sys,'/Vehicle/Vehicle/'));
+temp_tirevar = char(get_param(strcat(temp_tire_sys(temp_tire_sys_vehi),'/Tire'),'ActiveVariant'));
 text(0.05,0.85,sprintf('Tire %s\nSteps: %d',temp_tirevar,length(logsout_vxVeh.Time)),'Units','Normalized','Color',[1 1 1]*0.5);
 clear temp_tire_sys temp_tirevar
 

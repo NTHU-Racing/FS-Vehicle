@@ -52,7 +52,6 @@ set_param([modelname '/World'],'popup_gravity','Constant');
 
 % Assume no constraints on vehicle
 set_param([modelname '/Vehicle/Vehicle'],'popup_BodyToWorld','Free');
-set_param([modelname '/Vehicle/Vehicle'],'popup_wheel_spin','Free');
 
 
 % Assume all points on trajectory will be checked

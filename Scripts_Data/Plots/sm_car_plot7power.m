@@ -8,8 +8,8 @@ function sm_car_plot7power(logsout_data)
 
 % Get simulation results
 logsout_VehBus  = logsout_data.get('VehBus');
-logsout_t       = logsout_VehBus.Values.Chassis.Body.CG.vx.Time;
-logsout_sVeh    = logsout_VehBus.Values.Chassis.Body.CG.vx.Data;
+logsout_t       = logsout_VehBus.Values.Body.CG.vx.Time;
+logsout_sVeh    = logsout_VehBus.Values.Body.CG.vx.Data;
 
 existCurrentData = 0;
 if(isfield(logsout_VehBus.Values.Power,'Battery'))

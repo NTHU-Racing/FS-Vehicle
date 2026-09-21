@@ -26,34 +26,34 @@ function [TSuspMetrics, toeCurve, camCurve, KNCRes, pxCurve,pyCurve,strCurve, fz
 logsout_VehBus = logsout.get('VehBus');
 logsout_RdBus  = logsout.get('RdBus');
 
-simlog_t             = logsout_VehBus.Values.Chassis.WhlL1.xyz.Time;
-simlog_pxTire        = logsout_VehBus.Values.Chassis.WhlL1.xyz.Data(:,1);
-simlog_pyTire        = logsout_VehBus.Values.Chassis.WhlL1.xyz.Data(:,2);
-simlog_pzTire        = logsout_VehBus.Values.Chassis.WhlL1.xyz.Data(:,3);
-simlog_pxTireR        = logsout_VehBus.Values.Chassis.WhlR1.xyz.Data(:,1);
-simlog_pyTireR        = logsout_VehBus.Values.Chassis.WhlR1.xyz.Data(:,2);
-simlog_pzTireR        = logsout_VehBus.Values.Chassis.WhlR1.xyz.Data(:,3);
-simlog_aCamber       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.WhlL.aCamber.Data);
-simlog_aCamberR      = squeeze(logsout_VehBus.Values.Chassis.SuspA1.WhlR.aCamber.Data);
-simlog_aToe          = squeeze(logsout_VehBus.Values.Chassis.SuspA1.WhlL.aToe.Data);
-simlog_aToeR         = squeeze(logsout_VehBus.Values.Chassis.SuspA1.WhlR.aToe.Data);
-simlog_aCamberX      = squeeze(logsout_VehBus.Values.Chassis.SuspA1.WhlL.aCamberX.Data);
-simlog_aToeX         = squeeze(logsout_VehBus.Values.Chassis.SuspA1.WhlL.aToeX.Data);
-simlog_rigFz         = squeeze(logsout_VehBus.Values.Chassis.WhlL1.Testrig.Fz.Data);
-simlog_rigFzR        = squeeze(logsout_VehBus.Values.Chassis.WhlR1.Testrig.Fz.Data);
-simlog_rigvz         = squeeze(logsout_VehBus.Values.Chassis.WhlL1.Testrig.vz.Data);
-%simlog_rigFz        = squeeze(logsout_VehBus.Values.Chassis.WhlL1.Fz.Data);
-simlog_fBumpstop     = squeeze(logsout_VehBus.Values.Chassis.Damper.L1.FBumpstop.Data);
+simlog_t             = logsout_VehBus.Values.WhlL1.xyz.Time;
+simlog_pxTire        = logsout_VehBus.Values.WhlL1.xyz.Data(:,1);
+simlog_pyTire        = logsout_VehBus.Values.WhlL1.xyz.Data(:,2);
+simlog_pzTire        = logsout_VehBus.Values.WhlL1.xyz.Data(:,3);
+simlog_pxTireR        = logsout_VehBus.Values.WhlR1.xyz.Data(:,1);
+simlog_pyTireR        = logsout_VehBus.Values.WhlR1.xyz.Data(:,2);
+simlog_pzTireR        = logsout_VehBus.Values.WhlR1.xyz.Data(:,3);
+simlog_aCamber       = squeeze(logsout_VehBus.Values.Susp.SuspA1.WhlL.aCamber.Data);
+simlog_aCamberR      = squeeze(logsout_VehBus.Values.Susp.SuspA1.WhlR.aCamber.Data);
+simlog_aToe          = squeeze(logsout_VehBus.Values.Susp.SuspA1.WhlL.aToe.Data);
+simlog_aToeR         = squeeze(logsout_VehBus.Values.Susp.SuspA1.WhlR.aToe.Data);
+simlog_aCamberX      = squeeze(logsout_VehBus.Values.Susp.SuspA1.WhlL.aCamberX.Data);
+simlog_aToeX         = squeeze(logsout_VehBus.Values.Susp.SuspA1.WhlL.aToeX.Data);
+simlog_rigFz         = squeeze(logsout_VehBus.Values.WhlL1.Testrig.Fz.Data);
+simlog_rigFzR        = squeeze(logsout_VehBus.Values.WhlR1.Testrig.Fz.Data);
+simlog_rigvz         = squeeze(logsout_VehBus.Values.WhlL1.Testrig.vz.Data);
+%simlog_rigFz        = squeeze(logsout_VehBus.Values.WhlL1.Fz.Data);
+simlog_fBumpstop     = squeeze(logsout_VehBus.Values.Susp.Damper.L1.FBumpstop.Data);
 if(length(simlog_fBumpstop)==1)
     simlog_fBumpstop = zeros(size(simlog_t));
 end
-simlog_xRack         = squeeze(logsout_VehBus.Values.Chassis.SuspA1.Steer.xRack.Data);
-simlog_FRack         = squeeze(logsout_VehBus.Values.Chassis.SuspA1.Steer.FRack.Data);
-if(isfield(logsout_VehBus.Values.Chassis.SuspA1.Steer,'aWheel'))
-    simlog_aWheel    = squeeze(logsout_VehBus.Values.Chassis.SuspA1.Steer.aWheel.Data);
-elseif(isfield(logsout_VehBus.Values.Chassis.SuspA1.Steer,'xSteerActuator'))
+simlog_xRack         = squeeze(logsout_VehBus.Values.Susp.SuspA1.Steer.xRack.Data);
+simlog_FRack         = squeeze(logsout_VehBus.Values.Susp.SuspA1.Steer.FRack.Data);
+if(isfield(logsout_VehBus.Values.Susp.SuspA1.Steer,'aWheel'))
+    simlog_aWheel    = squeeze(logsout_VehBus.Values.Susp.SuspA1.Steer.aWheel.Data);
+elseif(isfield(logsout_VehBus.Values.Susp.SuspA1.Steer,'xSteerActuator'))
     % Needs additional scaling factors
-    %simlog_aWheel    = squeeze(logsout_VehBus.Values.Chassis.SuspA1.Steer.xSteerActuator.Data);
+    %simlog_aWheel    = squeeze(logsout_VehBus.Values.Susp.SuspA1.Steer.xSteerActuator.Data);
     simlog_aWheel    = 0;
 else
     simlog_aWheel = 0;
@@ -63,33 +63,33 @@ simlog_fLat          = squeeze(logsout_RdBus.Values.L1.fcp.fy.Data);
 simlog_fLong         = squeeze(logsout_RdBus.Values.L1.fcp.fx.Data);
 simlog_fLatO         = squeeze(logsout_RdBus.Values.L1.fcoy.Data);
 simlog_fLongWC       = squeeze(logsout_RdBus.Values.L1.fwcx.Data);
-simlog_yCPtch        = squeeze(logsout_VehBus.Values.Chassis.WhlL1.Testrig.cp.py.Data);
-simlog_zCPtch        = squeeze(logsout_VehBus.Values.Chassis.WhlL1.Testrig.cp.pz.Data);
-simlog_yCPtchR       = squeeze(logsout_VehBus.Values.Chassis.WhlR1.Testrig.cp.py.Data);
-simlog_zCPtchR       = squeeze(logsout_VehBus.Values.Chassis.WhlR1.Testrig.cp.pz.Data);
+simlog_yCPtch        = squeeze(logsout_VehBus.Values.WhlL1.Testrig.cp.py.Data);
+simlog_zCPtch        = squeeze(logsout_VehBus.Values.WhlL1.Testrig.cp.pz.Data);
+simlog_yCPtchR       = squeeze(logsout_VehBus.Values.WhlR1.Testrig.cp.py.Data);
+simlog_zCPtchR       = squeeze(logsout_VehBus.Values.WhlR1.Testrig.cp.pz.Data);
 
-if(isfield(logsout_VehBus.Values.Chassis.SuspA1,'SpringL')) % For Twist Beam
-    simlog_xSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.SpringL.x.Data);
-    simlog_vSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.SpringL.v.Data);
-elseif(isfield(logsout_VehBus.Values.Chassis.SuspA1,'ShockL'))  % For Live Axle
-    simlog_xSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.ShockL.x.Data);
-    simlog_vSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.ShockL.v.Data);
-elseif(isfield(logsout_VehBus.Values.Chassis.SuspA1,'Linkage'))  % For AxleTA2PR
-    simlog_xSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.Linkage.ShockL.x.Data);
-    simlog_vSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.Linkage.ShockL.v.Data);
-elseif(isfield(logsout_VehBus.Values.Chassis.SuspA1,'LUT'))  % For LUT
-    simlog_xSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.LUT.SuspL.Kinematic.xSpring.Data);
-    simlog_vSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.LUT.SuspL.Kinematic.vSpring.Data);
-elseif(isfield(logsout_VehBus.Values.Chassis.SuspA1,'Simple'))  % For 15DOF
-    simlog_xSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.Simple.xSpring.Data);
-    simlog_vSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.Simple.vSpring.Data);
-elseif(isfield(logsout_VehBus.Values.Chassis.SuspA1.LinkageL,'Shock')) % For Linkage
-    simlog_xSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.LinkageL.Shock.x.Data);
-    simlog_vSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.LinkageL.Shock.v.Data);
+if(isfield(logsout_VehBus.Values.Susp.SuspA1,'SpringL')) % For Twist Beam
+    simlog_xSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.SpringL.x.Data);
+    simlog_vSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.SpringL.v.Data);
+elseif(isfield(logsout_VehBus.Values.Susp.SuspA1,'ShockL'))  % For Live Axle
+    simlog_xSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.ShockL.x.Data);
+    simlog_vSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.ShockL.v.Data);
+elseif(isfield(logsout_VehBus.Values.Susp.SuspA1,'Linkage'))  % For AxleTA2PR
+    simlog_xSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.Linkage.ShockL.x.Data);
+    simlog_vSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.Linkage.ShockL.v.Data);
+elseif(isfield(logsout_VehBus.Values.Susp.SuspA1,'LUT'))  % For LUT
+    simlog_xSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.LUT.SuspL.Kinematic.xSpring.Data);
+    simlog_vSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.LUT.SuspL.Kinematic.vSpring.Data);
+elseif(isfield(logsout_VehBus.Values.Susp.SuspA1,'Simple'))  % For 15DOF
+    simlog_xSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.Simple.xSpring.Data);
+    simlog_vSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.Simple.vSpring.Data);
+elseif(isfield(logsout_VehBus.Values.Susp.SuspA1.LinkageL,'Shock')) % For Linkage
+    simlog_xSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.LinkageL.Shock.x.Data);
+    simlog_vSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.LinkageL.Shock.v.Data);
 else
     % For decoupled suspension
-    simlog_xSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.RollHeave.xHeave.x.Data);
-    simlog_vSpring       = squeeze(logsout_VehBus.Values.Chassis.SuspA1.RollHeave.xHeave.v.Data);
+    simlog_xSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.RollHeave.xHeave.x.Data);
+    simlog_vSpring       = squeeze(logsout_VehBus.Values.Susp.SuspA1.RollHeave.xHeave.v.Data);
 end
 
 % Omit initial transient from bushings
@@ -143,7 +143,7 @@ pyCurve.pzTire  = simlog_pzTire(indToeCambPlot)-simlog_pzTire(1);
 fzCurve.fz      = simlog_rigFz(indToeCambPlot);
 fzCurve.pzTire  = simlog_pzTire(indToeCambPlot)-simlog_pzTire(1);
 
-%simlog_aToe2    = logsout_VehBus.Values.Chassis.WhlL1.qxyz.Data(:,1);
+%simlog_aToe2    = logsout_VehBus.Values.WhlL1.qxyz.Data(:,1);
 %toeCurve.qToe2  = simlog_aToe2(indToeCambPlot);
 
 if(length(simlog_aWheel)>1)

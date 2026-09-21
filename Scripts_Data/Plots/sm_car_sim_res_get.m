@@ -10,23 +10,23 @@ function simres = sm_car_sim_res_get(logsout,simlog,Vehicle,varName)
 
 logsout_VehBus = logsout.get('VehBus');
 
-npts = length(logsout_VehBus.Values.Chassis.SuspA1.WhlL.aToe.Time);
+npts = length(logsout_VehBus.Values.Susp.SuspA1.WhlL.aToe.Time);
 
 dataFound = 1; % Assume data request worked
 switch varName
     case 'time'
-        simres.data  = logsout_VehBus.Values.Chassis.SuspA1.WhlL.aToe.Time;
+        simres.data  = logsout_VehBus.Values.Susp.SuspA1.WhlL.aToe.Time;
         simres.name  = 'Time';
         simres.units = 's';
     case {'vWhl','wWhl'}
         [tire_radius, ~] = sm_car_get_TireRadius(Vehicle);
 
-        chassis_log_fieldnames = fieldnames(logsout_VehBus.Values.Chassis);
+        chassis_log_fieldnames = fieldnames(logsout_VehBus.Values);
         whl_inds = find(startsWith(chassis_log_fieldnames,'Whl'));
         whlnames = sort(chassis_log_fieldnames(whl_inds));
 
         for whl_i = 1:length(whl_inds)
-            w = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).n.Data;
+            w = logsout_VehBus.Values.(whlnames{whl_i}).n.Data;
             if(strcmp(varName,'wWhl'))
                 simres.data(:,whl_i) = w;
                 simres.units = 'rad/s';
@@ -42,12 +42,12 @@ switch varName
         %[tire_radius, ~] = sm_car_get_TireRadius(Vehicle);
         posInd = strfind('xyz',varName(2));
 
-        chassis_log_fieldnames = fieldnames(logsout_VehBus.Values.Chassis);
+        chassis_log_fieldnames = fieldnames(logsout_VehBus.Values);
         whl_inds = find(startsWith(chassis_log_fieldnames,'Whl'));
         whlnames = sort(chassis_log_fieldnames(whl_inds));
 
         for whl_i = 1:length(whl_inds)
-            p = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).xyz.Data(:,posInd);
+            p = logsout_VehBus.Values.(whlnames{whl_i}).xyz.Data(:,posInd);
                 simres.data(:,whl_i) = p;
                 simres.units = 'm';
         end
@@ -88,16 +88,16 @@ switch varName
         simres.name   = 'Vehicle v';
         simres.units  = 'm/s';
     case 'gxVeh'
-        simres.data  = logsout_VehBus.Values.Chassis.Body.CG.gx.Data;
+        simres.data  = logsout_VehBus.Values.Body.CG.gx.Data;
         simres.name  = 'Vehicle Longitudinal Acceleration';
         simres.units = 'm/s^2';
     case 'gyVeh'
-        simres.data  = logsout_VehBus.Values.Chassis.Body.CG.gy.Data;
+        simres.data  = logsout_VehBus.Values.Body.CG.gy.Data;
         simres.name  = 'Vehicle Lateral Acceleration';
         simres.units = 'm/s^2';
     case 'slipAngVeh'
-        logsout_vxVeh = logsout_VehBus.Values.Chassis.Body.CG.vx;
-        logsout_vyVeh = logsout_VehBus.Values.Chassis.Body.CG.vy;
+        logsout_vxVeh = logsout_VehBus.Values.Body.CG.vx;
+        logsout_vyVeh = logsout_VehBus.Values.Body.CG.vy;
         simres.data   = atan2(logsout_vyVeh.Data, logsout_vxVeh.Data);
         simres.name   = 'Vehicle Slip Angle';
         simres.units  = 'rad';
@@ -127,37 +127,37 @@ switch varName
         simres.units = 'rad/s';
     case {'fShock','xShock','vShock'}
         fName = varName(1);
-        chassis_log_fieldnames = fieldnames(logsout_VehBus.Values.Chassis);        
+        chassis_log_fieldnames = fieldnames(logsout_VehBus.Values.Susp);        
         susp_inds = find(startsWith(chassis_log_fieldnames,'Susp'));
         suspnames = sort(chassis_log_fieldnames(susp_inds));
         data_ind = 0;
         for susp_i = 1:length(susp_inds)
             data_ind = data_ind+1;
-            if(isfield(logsout_VehBus.Values.Chassis.(suspnames{susp_i}),'LinkageL'))
-                simres.data(:,data_ind) = logsout_VehBus.Values.Chassis.(suspnames{susp_i}).LinkageL.Shock.(fName).Data;
+            if(isfield(logsout_VehBus.Values.Susp.(suspnames{susp_i}),'LinkageL'))
+                simres.data(:,data_ind) = logsout_VehBus.Values.Susp.(suspnames{susp_i}).LinkageL.Shock.(fName).Data;
                 simres.labels{data_ind} = [strrep(suspnames{susp_i},'Susp','') ' L'];
                 data_ind = data_ind+1;
-                simres.data(:,data_ind) = logsout_VehBus.Values.Chassis.(suspnames{susp_i}).LinkageR.Shock.(fName).Data;
+                simres.data(:,data_ind) = logsout_VehBus.Values.Susp.(suspnames{susp_i}).LinkageR.Shock.(fName).Data;
                 simres.labels{data_ind} = [strrep(suspnames{susp_i},'Susp','') ' R'];
-            elseif(isfield(logsout_VehBus.Values.Chassis.(suspnames{susp_i}),'Linkage'))
-                simres.data(:,data_ind) = logsout_VehBus.Values.Chassis.(suspnames{susp_i}).Linkage.ShockL.(fName).Data;
+            elseif(isfield(logsout_VehBus.Values.Susp.(suspnames{susp_i}),'Linkage'))
+                simres.data(:,data_ind) = logsout_VehBus.Values.Susp.(suspnames{susp_i}).Linkage.ShockL.(fName).Data;
                 simres.labels{data_ind} = [strrep(suspnames{susp_i},'Susp','') ' L'];
                 data_ind = data_ind+1;
-                simres.data(:,data_ind) = logsout_VehBus.Values.Chassis.(suspnames{susp_i}).Linkage.ShockR.(fName).Data;
+                simres.data(:,data_ind) = logsout_VehBus.Values.Susp.(suspnames{susp_i}).Linkage.ShockR.(fName).Data;
                 simres.labels{data_ind} = [strrep(suspnames{susp_i},'Susp','') ' R'];
-            elseif(isfield(logsout_VehBus.Values.Chassis.(suspnames{susp_i}),'LUT'))
+            elseif(isfield(logsout_VehBus.Values.Susp.(suspnames{susp_i}),'LUT'))
                 fNameData = strrep(varName,'Shock','Spring');
-                simres.data(:,data_ind) = logsout_VehBus.Values.Chassis.(suspnames{susp_i}).LUT.SuspL.Kinematic.(fNameData).Data;
+                simres.data(:,data_ind) = logsout_VehBus.Values.Susp.(suspnames{susp_i}).LUT.SuspL.Kinematic.(fNameData).Data;
                 simres.labels{data_ind} = [strrep(suspnames{susp_i},'Susp','') ' L'];
                 data_ind = data_ind+1;
-                simres.data(:,data_ind) = logsout_VehBus.Values.Chassis.(suspnames{susp_i}).LUT.SuspR.Kinematic.(fNameData).Data;
+                simres.data(:,data_ind) = logsout_VehBus.Values.Susp.(suspnames{susp_i}).LUT.SuspR.Kinematic.(fNameData).Data;
                 simres.labels{data_ind} = [strrep(suspnames{susp_i},'Susp','') ' R'];            
-            elseif(isfield(logsout_VehBus.Values.Chassis.(suspnames{susp_i}),'Simple'))
+            elseif(isfield(logsout_VehBus.Values.Susp.(suspnames{susp_i}),'Simple'))
                 fNameData = strrep(varName,'Shock','Spring');
-                simres.data(:,data_ind) = logsout_VehBus.Values.Chassis.(suspnames{susp_i}).Simple.(fNameData).Data;
+                simres.data(:,data_ind) = logsout_VehBus.Values.Susp.(suspnames{susp_i}).Simple.(fNameData).Data;
                 simres.labels{data_ind} = [strrep(suspnames{susp_i},'Susp','') ' L'];
                 data_ind = data_ind+1;
-                simres.data(:,data_ind) = logsout_VehBus.Values.Chassis.(suspnames{susp_i}).Simple.(fNameData).Data;
+                simres.data(:,data_ind) = logsout_VehBus.Values.Susp.(suspnames{susp_i}).Simple.(fNameData).Data;
                 simres.labels{data_ind} = [strrep(suspnames{susp_i},'Susp','') ' R'];            
             end
         end
@@ -183,14 +183,14 @@ switch varName
         simres.name   = 'Wheel Torque';
         simres.labels = strrep(drsnames,'MDriveshaft','');
     case {'fxWhl','fyWhl','fzWhl','mxWhl','myWhl','mzWhl'}
-        chassis_log_fieldnames = fieldnames(logsout_VehBus.Values.Chassis);
+        chassis_log_fieldnames = fieldnames(logsout_VehBus.Values);
         whl_inds = find(startsWith(chassis_log_fieldnames,'Whl'));
         whlnames = sort(chassis_log_fieldnames(whl_inds));
         fName = [upper(varName(1)) varName(2)];
         simres.name = strrep(fName,'F','Wheel Force ');
         simres.name = strrep(simres.name,'M','Wheel Moment ');
         for whl_i = 1:length(whl_inds)
-            simres.data(:,whl_i) = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).(fName).Data;
+            simres.data(:,whl_i) = logsout_VehBus.Values.(whlnames{whl_i}).(fName).Data;
         end
         if (strcmpi(varName(1),'m'))
             simres.units = 'N*m';
@@ -199,47 +199,47 @@ switch varName
         end
         simres.labels = whlnames;
     case 'toeWhl'
-        simres.data(:,1) = -logsout_VehBus.Values.Chassis.SuspA1.WhlL.aToe.Data*pi/180;
-        simres.data(:,2) = logsout_VehBus.Values.Chassis.SuspA1.WhlR.aToe.Data*pi/180;
+        simres.data(:,1) = -logsout_VehBus.Values.Susp.SuspA1.WhlL.aToe.Data*pi/180;
+        simres.data(:,2) = logsout_VehBus.Values.Susp.SuspA1.WhlR.aToe.Data*pi/180;
         simres.labels = {'WhlL1','WhlR1'};
-        if(isfield(logsout_VehBus.Values.Chassis,'SuspA2'))
-            simres.data(:,3) = -logsout_VehBus.Values.Chassis.SuspA2.WhlL.aToe.Data*pi/180;
-            simres.data(:,4) = logsout_VehBus.Values.Chassis.SuspA2.WhlR.aToe.Data*pi/180;
+        if(isfield(logsout_VehBus.Values.Susp,'SuspA2'))
+            simres.data(:,3) = -logsout_VehBus.Values.Susp.SuspA2.WhlL.aToe.Data*pi/180;
+            simres.data(:,4) = logsout_VehBus.Values.Susp.SuspA2.WhlR.aToe.Data*pi/180;
             simres.labels = {'WhlL1','WhlR1','WhlL2','WhlR2'};
         end
         simres.name   = 'Wheel Toe Angle';
         simres.units  = 'rad';
         simres.note   = '+ is CCW from top view';
     case 'camWhl'
-        simres.data(:,1) = -logsout_VehBus.Values.Chassis.SuspA1.WhlL.aCamber.Data*pi/180;
-        simres.data(:,2) = logsout_VehBus.Values.Chassis.SuspA1.WhlR.aCamber.Data*pi/180;
+        simres.data(:,1) = -logsout_VehBus.Values.Susp.SuspA1.WhlL.aCamber.Data*pi/180;
+        simres.data(:,2) = logsout_VehBus.Values.Susp.SuspA1.WhlR.aCamber.Data*pi/180;
         simres.labels = {'WhlL1','WhlR1'};
-        if(isfield(logsout_VehBus.Values.Chassis,'SuspA2'))
-            simres.data(:,3) = -logsout_VehBus.Values.Chassis.SuspA2.WhlL.aCamber.Data*pi/180;
-            simres.data(:,4) = logsout_VehBus.Values.Chassis.SuspA2.WhlR.aCamber.Data*pi/180;
+        if(isfield(logsout_VehBus.Values.Susp,'SuspA2'))
+            simres.data(:,3) = -logsout_VehBus.Values.Susp.SuspA2.WhlL.aCamber.Data*pi/180;
+            simres.data(:,4) = logsout_VehBus.Values.Susp.SuspA2.WhlR.aCamber.Data*pi/180;
             simres.labels = {'WhlL1','WhlR1','WhlL2','WhlR2'};
         end
         simres.name   = 'Wheel Camber Angle';
         simres.units  = 'rad';
         simres.note   = '+ is CCW from rear view';
     case 'aSlipWhl'
-        simres.data(:,1) = logsout_VehBus.Values.Chassis.WhlL1.aSlip.Data;
-        simres.data(:,2) = logsout_VehBus.Values.Chassis.WhlR1.aSlip.Data;
+        simres.data(:,1) = logsout_VehBus.Values.WhlL1.aSlip.Data;
+        simres.data(:,2) = logsout_VehBus.Values.WhlR1.aSlip.Data;
         simres.labels = {'WhlL1','WhlR1'};
-        if(isfield(logsout_VehBus.Values.Chassis,'SuspA2'))
-            simres.data(:,3) = logsout_VehBus.Values.Chassis.WhlL2.aSlip.Data;
-            simres.data(:,4) = logsout_VehBus.Values.Chassis.WhlR2.aSlip.Data;
+        if(isfield(logsout_VehBus.Values.Susp,'SuspA2'))
+            simres.data(:,3) = logsout_VehBus.Values.WhlL2.aSlip.Data;
+            simres.data(:,4) = logsout_VehBus.Values.WhlR2.aSlip.Data;
             simres.labels = {'WhlL1','WhlR1','WhlL2','WhlR2'};
         end
         simres.name   = 'Tire Slip Angle';
         simres.units  = 'deg';
         simres.note   = '+ is CCW from top view';
     case 'aSlipDelta'
-        if(isfield(logsout_VehBus.Values.Chassis,'SuspA2'))
-            aSlipFL = logsout_VehBus.Values.Chassis.WhlL1.aSlip.Data;
-            aSlipFR = logsout_VehBus.Values.Chassis.WhlR1.aSlip.Data;
-            aSlipRL = logsout_VehBus.Values.Chassis.WhlL2.aSlip.Data;
-            aSlipRR = logsout_VehBus.Values.Chassis.WhlR2.aSlip.Data;
+        if(isfield(logsout_VehBus.Values.Susp,'SuspA2'))
+            aSlipFL = logsout_VehBus.Values.WhlL1.aSlip.Data;
+            aSlipFR = logsout_VehBus.Values.WhlR1.aSlip.Data;
+            aSlipRL = logsout_VehBus.Values.WhlL2.aSlip.Data;
+            aSlipRR = logsout_VehBus.Values.WhlR2.aSlip.Data;
             aSlipF  = (aSlipFL+aSlipFR)/2;
             aSlipR  = (aSlipRL+aSlipRR)/2;
             simres.data  = abs(aSlipF)-abs(aSlipR);
@@ -250,19 +250,19 @@ switch varName
             error('Cannot calculate understeer/oversteer.  Ensure your vehicle has front and rear axles.');
         end
     case 'fRack'
-        simres.data  = logsout_VehBus.Values.Chassis.SuspA1.Steer.FRack.Data(:);
+        simres.data  = logsout_VehBus.Values.Susp.SuspA1.Steer.FRack.Data(:);
         simres.name  = 'Rack Actuation Force';
         simres.units = 'N';
     case 'xRack'
-        simres.data  = logsout_VehBus.Values.Chassis.SuspA1.Steer.xRack.Data(:);
+        simres.data  = logsout_VehBus.Values.Susp.SuspA1.Steer.xRack.Data(:);
         simres.name  = 'Rack Position';
         simres.units = 'm';
     case 'aSteer'
-        simres.data  = logsout_VehBus.Values.Chassis.SuspA1.Steer.aWheel.Data(:);
+        simres.data  = logsout_VehBus.Values.Susp.SuspA1.Steer.aWheel.Data(:);
         simres.name  = 'Steering Wheel Angle';
         simres.units = 'rad';
     case 'tSteer'
-        simres.data  = logsout_VehBus.Values.Chassis.SuspA1.Steer.trqWheel.Data(:);
+        simres.data  = logsout_VehBus.Values.Susp.SuspA1.Steer.trqWheel.Data(:);
         simres.name  = 'Steering Wheel Torque';
         simres.units = 'N*m';
     case 'qTrackRod'
@@ -270,12 +270,12 @@ switch varName
         % logic to obtain the correct field.  Use try-catch.
         try 
             % Obtain joint angles (deviation from design position)
-            suspType = simlog.Vehicle.Vehicle.Chassis.SuspA1.Linkage.Linkage_L.childIds;
-            UJLqx = simlog.Vehicle.Vehicle.Chassis.SuspA1.Linkage.Linkage_L.(suspType{1}).Universal_Rack_Rod.Universal_Joint.Rx.q.series.values('rad');
-            UJLqy = simlog.Vehicle.Vehicle.Chassis.SuspA1.Linkage.Linkage_L.(suspType{1}).Universal_Rack_Rod.Universal_Joint.Ry.q.series.values('rad');
+            suspType = simlog.Vehicle.Vehicle.Suspension.SuspA1.Linkage.Linkage_L.childIds;
+            UJLqx = simlog.Vehicle.Vehicle.Suspension.SuspA1.Linkage.Linkage_L.(suspType{1}).Universal_Rack_Rod.Universal_Joint.Rx.q.series.values('rad');
+            UJLqy = simlog.Vehicle.Vehicle.Suspension.SuspA1.Linkage.Linkage_L.(suspType{1}).Universal_Rack_Rod.Universal_Joint.Ry.q.series.values('rad');
 
-            UJRqx = simlog.Vehicle.Vehicle.Chassis.SuspA1.Linkage.Linkage_R.(suspType{1}).Universal_Rack_Rod.Universal_Joint.Rx.q.series.values('rad');
-            UJRqy = simlog.Vehicle.Vehicle.Chassis.SuspA1.Linkage.Linkage_R.(suspType{1}).Universal_Rack_Rod.Universal_Joint.Ry.q.series.values('rad');
+            UJRqx = simlog.Vehicle.Vehicle.Suspension.SuspA1.Linkage.Linkage_R.(suspType{1}).Universal_Rack_Rod.Universal_Joint.Rx.q.series.values('rad');
+            UJRqy = simlog.Vehicle.Vehicle.Suspension.SuspA1.Linkage.Linkage_R.(suspType{1}).Universal_Rack_Rod.Universal_Joint.Ry.q.series.values('rad');
 
             % Obtain angle in design position using hardpoints
             dxyz0 = Vehicle.Chassis.SuspA1.Linkage.TrackRod.sOutboard.Value-...

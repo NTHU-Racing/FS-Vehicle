@@ -37,7 +37,7 @@ clf(evalin('base',fig_handle_name))
 % Get simulation results
 logsout_VehBus = logsout_sm_car.get(log_fieldname);
 
-chassis_log_fieldnames = fieldnames(logsout_VehBus.Values.Chassis);
+chassis_log_fieldnames = fieldnames(logsout_VehBus.Values);
 whl_inds = find(startsWith(chassis_log_fieldnames,'Whl'));
 whlnames = sort(chassis_log_fieldnames(whl_inds));
 
@@ -49,19 +49,19 @@ for whl_i = 1:length(whl_inds)
     end
     
     ah(1) = subplot(3,2,1);
-    logsout_Fx = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).Fx;
+    logsout_Fx = logsout_VehBus.Values.(whlnames{whl_i}).Fx;
     hold on
     plot(logsout_Fx.Time, squeeze(logsout_Fx.Data),'LineWidth', 1,'LineStyle',line_style,'DisplayName',whlnames{whl_i})
     title('Fx (N)');
     
     ah(2) = subplot(3,2,3);
-    logsout_Fy = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).Fy;
+    logsout_Fy = logsout_VehBus.Values.(whlnames{whl_i}).Fy;
     hold on
     plot(logsout_Fy.Time, squeeze(logsout_Fy.Data),'LineWidth', 1,'LineStyle',line_style,'DisplayName',whlnames{whl_i})
     title('Fy (N)');
     
     ah(3) = subplot(3,2,5);
-    logsout_Fz = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).Fz;
+    logsout_Fz = logsout_VehBus.Values.(whlnames{whl_i}).Fz;
     hold on
     % Squeeze needed for MFeval tire
     plot(logsout_Fz.Time, squeeze(logsout_Fz.Data),'LineWidth', 1,'LineStyle',line_style,'DisplayName',whlnames{whl_i});
@@ -69,19 +69,19 @@ for whl_i = 1:length(whl_inds)
     xlabel('Time (s)')
     
     ah(4) = subplot(3,2,2);
-    logsout_Mx = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).Mx;
+    logsout_Mx = logsout_VehBus.Values.(whlnames{whl_i}).Mx;
     hold on
     plot(logsout_Mx.Time, squeeze(logsout_Mx.Data),'LineWidth', 1,'LineStyle',line_style,'DisplayName',whlnames{whl_i})
     title('Mx (N*m)');
     
     ah(5) = subplot(3,2,4);
-    logsout_My = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).My;
+    logsout_My = logsout_VehBus.Values.(whlnames{whl_i}).My;
     hold on
     plot(logsout_My.Time, squeeze(logsout_My.Data),'LineWidth', 1,'LineStyle',line_style,'DisplayName',whlnames{whl_i})
     title('My (N*m)');
     
     ah(6) = subplot(3,2,6);
-    logsout_Mz = logsout_VehBus.Values.Chassis.(whlnames{whl_i}).Mz;
+    logsout_Mz = logsout_VehBus.Values.(whlnames{whl_i}).Mz;
     hold on
     plot(logsout_Mz.Time, squeeze(logsout_Mz.Data),'LineWidth', 1,'LineStyle',line_style,'DisplayName',whlnames{whl_i})
     title('Mz (N*m)');
